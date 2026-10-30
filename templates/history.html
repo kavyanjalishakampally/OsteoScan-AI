@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History | OsteoScan AI</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #203047;
+        }
+        header {
+            background: linear-gradient(135deg, #123b60, #167d91);
+            color: white;
+            padding: 28px 6%;
+        }
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; opacity: .9; }
+        main { max-width: 1150px; margin: 32px auto; padding: 0 18px; }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 11px 17px;
+            border-radius: 8px;
+            text-decoration: none;
+            background: #147d91;
+            color: white;
+            font-weight: bold;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 22px #18344d12;
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        th, td {
+            padding: 15px 13px;
+            text-align: left;
+            border-bottom: 1px solid #e8edf3;
+        }
+        th { background: #eaf2f7; color: #24445f; }
+        tr:last-child td { border-bottom: none; }
+        .result {
+            font-weight: bold;
+            color: #176b4d;
+        }
+        .warning { color: #a34b25; }
+        .empty { text-align: center; padding: 40px; color: #66788a; }
+        .report { color: #087b91; font-weight: bold; }
+        .note { margin-top: 20px; font-size: 13px; color: #68788a; line-height: 1.6; }
+        @media (max-width: 600px) {
+            header { padding: 24px 18px; }
+            main { margin-top: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>OsteoScan AI</h1>
+        <p>Patient Screening Records &amp; Prediction History</p>
+    </header>
+
+    <main>
+        <div class="topbar">
+            <div>
+                <h2>Prediction History</h2>
+                <p>Previously recorded screening results</p>
+            </div>
+            <a class="button" href="/">+ New Analysis</a>
+        </div>
+
+        <div class="table-wrap">
+            {% if records %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Patient Reference</th>
+                        <th>Age</th>
+                        <th>AI Prediction</th>
+                        <th>Confidence</th>
+                        <th>Date &amp; Time</th>
+                        <th>PDF Report</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record["id"] }}</td>
+                        <td>{{ record["patient_id"] }}</td>
+                        <td>{{ record["patient_age"] or "—" }}</td>
+                        <td class="{% if record['prediction'] == 'Osteoporosis' %}warning{% else %}result{% endif %}">
+                            {{ record["prediction"] }}
+                        </td>
+                        <td>{{ "%.2f"|format(record["confidence"]) }}%</td>
+                        <td>{{ record["created_at"] }}</td>
+                        <td>
+                            <a class="report" href="{{ url_for('download_report', record_id=record['id']) }}">
+                                Download PDF
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">
+                <h3>No predictions recorded yet</h3>
+                <p>Analyze an X-ray to create your first screening record.</p>
+                <a class="button" href="/">Analyze X-ray</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <p class="note">
+            Educational research prototype only. AI predictions may be incorrect
+            and must not be treated as a medical diagnosis. Patient information
+            is stored locally in the application's database; restrict access to
+            this computer and its files.
+        </p>
+    </main>
+</body>
+</html>

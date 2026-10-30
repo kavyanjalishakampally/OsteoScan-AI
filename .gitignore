@@ -1,0 +1,20 @@
+# Python environment
+venv/
+__pycache__/
+*.pyc
+
+# Database and secrets
+*.db
+.env
+
+# Uploaded and test images
+uploads/
+test_crops/
+XRAY2.jpg
+
+# Backup files
+app_before_database.py
+app backup.py
+
+# Temporary files
+.ipynb_checkpoints/

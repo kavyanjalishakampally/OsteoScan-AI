@@ -1,0 +1,140 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | OsteoScan AI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #102a43, #167d9a);
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 38px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .logo {
+            width: 62px;
+            height: 62px;
+            margin: 0 auto 15px;
+            border-radius: 16px;
+            background: #e0f2fe;
+            color: #0369a1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #102a43;
+            font-size: 27px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin: 10px 0 28px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: 2px solid #7dd3fc;
+            border-color: #0284c7;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #0369a1;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #075985;
+        }
+
+        .error {
+            color: #b91c1c;
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 7px;
+            margin-top: 14px;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">✚</div>
+        <h1>OsteoScan AI</h1>
+        <p class="subtitle">Sign in to your X-ray analysis dashboard</p>
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text"
+                   placeholder="Enter username" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password"
+                   placeholder="Enter password" required>
+
+            <button type="submit">Sign In</button>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+        </form>
+
+        <p class="footer">AI-assisted X-ray screening · For educational use</p>
+    </div>
+</body>
+</html>

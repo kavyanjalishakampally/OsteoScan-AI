@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsteoScan AI | Knee X-Ray Screening</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #123c69, #176b87);
+            color: white;
+            padding: 22px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            font-weight: normal;
+            opacity: 0.85;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px 30px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 14px;
+            color: #123c69;
+            line-height: 1.25;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: auto;
+            color: #637083;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1050px;
+            margin: 30px auto 60px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 12px 35px rgba(20, 40, 70, 0.10);
+        }
+
+        .upload-area {
+            border: 2px dashed #8eb8c9;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8fcfe;
+            transition: 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #176b87;
+            background: #f1fafd;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .upload-area h2 {
+            color: #123c69;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .upload-area p {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: #176b87;
+            color: white;
+            padding: 13px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .file-label:hover {
+            background: #123c69;
+        }
+
+        .file-label:focus-within {
+            outline: 3px solid #9bd6e5;
+        }
+
+        #file-name {
+            margin-top: 15px;
+            color: #176b87;
+            font-weight: bold;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .patient-details {
+            margin-top: 25px;
+            padding: 25px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+        }
+
+        .patient-details h3 {
+            margin-bottom: 8px;
+            color: #173b52;
+            font-size: 20px;
+        }
+
+        .section-description {
+            margin-bottom: 22px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group > label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .required-mark {
+            color: #dc2626;
+        }
+
+        .optional {
+            color: #64748b;
+            font-weight: normal;
+        }
+
+        .form-group input,
+        .form-group select {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #fff;
+            color: #0f172a;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #0f8190;
+            box-shadow: 0 0 0 3px rgba(15, 129, 144, 0.12);
+        }
+
+        .form-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            margin-top: 25px;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            background: #123c69;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .analyze-btn:hover {
+            background: #0c2e52;
+        }
+
+        .analyze-btn:focus-visible {
+            outline: 3px solid #7dd3e3;
+            outline-offset: 3px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-top: 28px;
+        }
+
+        .info-box {
+            background: #f7fafc;
+            border: 1px solid #edf1f5;
+            padding: 22px 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-box h3 {
+            color: #123c69;
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+
+        .info-box p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .disclaimer {
+            margin-top: 25px;
+            padding: 18px;
+            border-left: 4px solid #e09f3e;
+            background: #fff9ed;
+            color: #6b5a38;
+            font-size: 13px;
+            line-height: 1.7;
+            border-radius: 6px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #7a8797;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .hero {
+                padding: 38px 18px 20px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 20px;
+            }
+
+            .card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .patient-details {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🦴 OsteoScan <span>AI</span></div>
+    <div class="badge">AI X-Ray Screening</div>
+</header>
+
+<section class="hero">
+    <h1>Knee X-Ray Osteoporosis Screening</h1>
+    <p>
+        Upload a single-knee or bilateral knee X-ray for preliminary
+        AI-based screening using our EfficientNetB0 model.
+        Bilateral images are intended to produce separate results for
+        the two knee regions once bilateral processing is enabled.
+    </p>
+</section>
+
+<main class="container">
+    <div class="card">
+
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+
+            <div class="upload-area">
+                <div class="upload-icon">🩻</div>
+                <h2>Upload Knee X-Ray</h2>
+                <p>
+                    Choose one clear X-ray image in JPG, JPEG or PNG format.
+                    For bilateral analysis, select an image showing both knees.
+                </p>
+
+                <label for="file-upload" class="file-label">
+                    Choose X-Ray Image
+                </label>
+
+                <input
+                    id="file-upload"
+                    type="file"
+                    name="file"
+                    accept=".jpg,.jpeg,.png"
+                    required
+                >
+
+                <div id="file-name" aria-live="polite">
+                    No image selected
+                </div>
+            </div>
+
+            <section class="patient-details">
+                <h3>Patient Information</h3>
+                <p class="section-description">
+                    Enter a reference ID for this screening record.
+                    Use a non-identifying demo ID during project demonstrations.
+                </p>
+
+                <div class="form-group">
+                    <label for="patient_id">
+                        Patient Reference ID
+                        <span class="required-mark">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="patient_id"
+                        name="patient_id"
+                        placeholder="e.g., DEMO-001"
+                        maxlength="40"
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="patient_age">
+                        Age <span class="optional">(Optional)</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="patient_age"
+                        name="patient_age"
+                        min="1"
+                        max="120"
+                        placeholder="Enter age in years"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="xray_type">X-Ray Type</label>
+                    <select id="xray_type" name="xray_type" required>
+                        <option value="single">Single-knee X-ray</option>
+                        <option value="bilateral">Bilateral X-ray (both knees)</option>
+                    </select>
+                </div>
+            </section>
+
+            <button type="submit" class="analyze-btn">
+                Analyze X-Ray
+            </button>
+
+        </form>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>224 × 224</h3>
+                <p>Input image size used by the AI model.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>EfficientNetB0</h3>
+                <p>Transfer-learning architecture used for classification.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Separate Knee Results</h3>
+                <p>Planned bilateral workflow for displaying each knee's model output.</p>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>Important medical disclaimer:</strong>
+            This application is intended for educational and research purposes
+            only. Model outputs are not confirmed medical findings or diagnoses.
+            Confidence percentages are not calibrated probabilities of disease.
+            Do not use the results to make treatment decisions. Consult a
+            qualified healthcare professional for medical interpretation.
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    OsteoScan AI • AI-Based Osteoporosis Knee X-Ray Classification Project
+</footer>
+
+<script>
+    const fileInput = document.getElementById("file-upload");
+    const fileName = document.getElementById("file-name");
+
+    fileInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+            fileName.textContent = "Selected: " + this.files[0].name;
+        } else {
+            fileName.textContent = "No image selected";
+        }
+    });
+</script>
+
+</body>
+</html>

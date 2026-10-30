@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result | OsteoScan AI</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #203047;
+        }
+        header {
+            background: linear-gradient(135deg, #123b60, #167d91);
+            color: white;
+            padding: 28px 6%;
+        }
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; opacity: .9; }
+        main { max-width: 950px; margin: 35px auto; padding: 0 18px; }
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 30px #18344d12;
+        }
+        .eyebrow {
+            color: #147d91;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        h2 { margin-top: 10px; }
+        .prediction {
+            margin: 22px 0;
+            padding: 22px;
+            border-radius: 12px;
+            background: #edf7f7;
+        }
+        .prediction h2 { color: #176b4d; margin-bottom: 8px; }
+        .prediction.alert { background: #fff3eb; }
+        .prediction.alert h2 { color: #a34b25; }
+        .confidence {
+            font-size: 30px;
+            font-weight: bold;
+            color: #147d91;
+        }
+        .knee-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+        .knee-card {
+            background: #f6f8fb;
+            border: 1px solid #e3eaf1;
+            border-radius: 14px;
+            padding: 20px;
+            min-width: 0;
+        }
+        .knee-card h3 { margin-top: 0; }
+        .knee-card .prediction {
+            margin: 12px 0 0;
+            padding: 16px;
+        }
+        .knee-card .confidence { font-size: 26px; }
+        .knee-image {
+            display: block;
+            width: 100%;
+            max-height: 260px;
+            object-fit: contain;
+            background: #e9edf2;
+            border-radius: 8px;
+            margin-top: 14px;
+        }
+        .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+            margin: 25px 0;
+        }
+        .detail {
+            padding: 16px;
+            background: #f6f8fb;
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+        }
+        .detail span {
+            display: block;
+            color: #68788a;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+        .detail strong { font-size: 15px; }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            background: #147d91;
+            color: white;
+            font-weight: bold;
+        }
+        .secondary { background: #e8eef5; color: #24445f; }
+        .disclaimer {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #68788a;
+            margin-top: 24px;
+        }
+        @media (max-width: 600px) {
+            .card { padding: 22px 18px; }
+            .knee-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>OsteoScan AI</h1>
+        <p>AI-Based Knee X-ray Screening Prototype</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <div class="eyebrow">Analysis completed</div>
+            <h2>Screening Result</h2>
+
+            {% if xray_type == 'bilateral' %}
+
+                <p>
+                    The uploaded image was processed as two separate image
+                    regions. Results below refer to the image-left and
+                    image-right regions, not necessarily the patient's
+                    anatomical left and right knees.
+                </p>
+
+                <div class="knee-grid">
+                    <div class="knee-card">
+                        <h3>Image-left Knee</h3>
+
+                        <div class="prediction {% if left_prediction == 'Osteoporosis' %}alert{% endif %}">
+                            <p>Model prediction</p>
+                            <h2>{{ left_prediction }}</h2>
+                            <p>Individual model score</p>
+                            <div class="confidence">
+                                {{ "%.2f"|format(left_confidence) }}%
+                            </div>
+                        </div>
+
+                        {% if left_image_file %}
+                            <img
+                                class="knee-image"
+                                src="{{ url_for('static', filename=left_image_file) }}"
+                                alt="Processed image-left knee region">
+                        {% endif %}
+                    </div>
+
+                    <div class="knee-card">
+                        <h3>Image-right Knee</h3>
+
+                        <div class="prediction {% if right_prediction == 'Osteoporosis' %}alert{% endif %}">
+                            <p>Model prediction</p>
+                            <h2>{{ right_prediction }}</h2>
+                            <p>Individual model score</p>
+                            <div class="confidence">
+                                {{ "%.2f"|format(right_confidence) }}%
+                            </div>
+                        </div>
+
+                        {% if right_image_file %}
+                            <img
+                                class="knee-image"
+                                src="{{ url_for('static', filename=right_image_file) }}"
+                                alt="Processed image-right knee region">
+                        {% endif %}
+                    </div>
+                </div>
+
+            {% else %}
+
+                <div class="prediction {% if prediction == 'Osteoporosis' %}alert{% endif %}">
+                    <p>Model prediction</p>
+                    <h2>{{ prediction }}</h2>
+                    <p>Model score</p>
+                    <div class="confidence">
+                        {{ "%.2f"|format(confidence) }}%
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <div class="details">
+                <div class="detail">
+                    <span>Patient reference ID</span>
+                    <strong>{{ patient_id }}</strong>
+                </div>
+                <div class="detail">
+                    <span>Age</span>
+                    <strong>{{ patient_age or "Not provided" }}</strong>
+                </div>
+                <div class="detail">
+                    <span>Report number</span>
+                    <strong>{{ record_id }}</strong>
+                </div>
+                <div class="detail">
+                    <span>Date and time</span>
+                    <strong>{{ created_at }}</strong>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a class="button"
+                   href="{{ url_for('download_report', record_id=record_id) }}">
+                    Download PDF Report
+                </a>
+                <a class="button secondary" href="{{ url_for('history') }}">
+                    View History
+                </a>
+                <a class="button secondary" href="{{ url_for('home') }}">
+                    Analyze Another X-ray
+                </a>
+            </div>
+
+            <p class="disclaimer">
+                <strong>Important medical disclaimer:</strong>
+                This application is an educational and research prototype.
+                Predictions and scores are not confirmed diagnoses or
+                necessarily calibrated probabilities of disease. The model
+                may make errors and has not been established as a clinically
+                validated diagnostic system. Bilateral results depend on
+                how the image regions are cropped. Consult a qualified
+                healthcare professional for medical interpretation and
+                decisions.
+            </p>
+        </section>
+    </main>
+</body>
+</html>
